@@ -4,6 +4,8 @@ date: 2025-09-28 11:00:00 +1300
 categories: [Projects]
 tags: [pyqt, platformio, oled, nrf]
 mermaid: true
+image:
+  path: assets/images/oled-controller/cover.png
 ---
 
 I had an OLED screen lying around, I decided it was time to give it a little personality. No particular reason - just pure experimentation.
@@ -12,14 +14,17 @@ This project is all about messing with an OLED driver and a lightweight desktop 
 
 ## Hardware
 
+![Hardware Front](asserts/images/oled-controller/hardware-front.png)
+![Hardware Back](asserts/images/oled-controller/hardware-back.png)
+
 ### OLED Screen
 
-I am using a [Grove - OLED Display 0.96" (SSD1315)](https://wiki.seeedstudio.com/Grove-OLED-Display-0.96-SSD1315/), which is a monochrome 128x64 pixel display and has an I2C interface.
+The [Grove - OLED Display 0.96" (SSD1315)](https://wiki.seeedstudio.com/Grove-OLED-Display-0.96-SSD1315/) is a monochrome 128x64 pixel display.
 I removed the 4-pin I2C header and moved it to the back because I didn't want the wires sticking out over the screen.
 
 ### Controller
 
-I have a couple of [Seeed Studio XIAO nRF52840 Sense](https://wiki.seeedstudio.com/XIAO_BLE/) that were perfect for this project. It's tiny, has a nice USB interface, and it has several GPIOs to utilize. This board has lots of features that I don't need (BLE, IMU, microphone, battery charging, additional flash, etc.). Maybe in the future I will utilize some of these features, e.g. I could add a battery and use BLE to send images instead of serial USB. 
+A [Seeed Studio XIAO nRF52840 Sense](https://wiki.seeedstudio.com/XIAO_BLE/) was perfect for this project. It's tiny, has a nice USB interface, and it has several GPIOs to utilize. This board has lots of features that I don't need (BLE, IMU, microphone, battery charging, additional flash, etc.). Maybe in the future I will utilize some of these features, e.g. I could add a battery and use BLE to send images instead of serial USB. 
 
 ### Casing
 
@@ -64,7 +69,7 @@ oled_set_image_ret_t oled_set_image(const uint8_t *image_data, size_t length)
 I created a simple `[header][length][payload][crc]` protocol with the following state machine:
 
 ```mermaid
-flowchart LR
+flowchart TD
     HEADER_LSB -->|byte == 0xAA| HEADER_MSB
     HEADER_MSB -->|byte != 0x55| HEADER_LSB
     HEADER_MSB -->|byte == 0x55| LENGTH_LSB
@@ -73,9 +78,14 @@ flowchart LR
     LENGTH_MSB -->|length <= 1024| DATA
     DATA -->|received all bytes| CRC_LSB
     CRC_LSB -->|any byte| CRC_MSB
-    CRC_MSB -->|crc match \ send ack, set image| HEADER_LSB
-    CRC_MSB -->|crc mismatch \ send nack| HEADER_LSB
+    CRC_MSB -->|crc match
+    \ send ack
+    \set image| HEADER_LSB
+    CRC_MSB -->|crc mismatch
+    \ send nack| HEADER_LSB
 ```
+
+When a full packet is received, it's sent to the OLED driver. 1024 bytes are required because each pixel on the OLED display is a bit. There are 128x64 pixels, which is 8192 pixels, which is 1024 bytes.
 
 ### LEDs
 
