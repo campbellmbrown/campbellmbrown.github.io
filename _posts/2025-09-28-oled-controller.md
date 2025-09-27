@@ -14,8 +14,8 @@ This project is all about messing with an OLED driver and a lightweight desktop 
 
 ## Hardware
 
-![Hardware Front](asserts/images/oled-controller/hardware-front.png)
-![Hardware Back](asserts/images/oled-controller/hardware-back.png)
+![Hardware Front](assets/images/oled-controller/hardware-front.png)
+![Hardware Back](assets/images/oled-controller/hardware-back.png)
 
 ### OLED Screen
 
