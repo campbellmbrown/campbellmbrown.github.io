@@ -8,9 +8,7 @@ image:
   path: assets/images/oled-controller/cover.png
 ---
 
-I had an OLED screen lying around, I decided it was time to give it a little personality. No particular reason - just pure experimentation.
-
-This project is all about messing with an OLED driver and a lightweight desktop app to send images and animations to the screen.
+This project is all about giving a little bit of personality to an OLED driver. No particular reason - just pure experimentation. The firmware is a simple controller that receives image data and sends it to the OLED screen. The desktop application is written in Python using PySide6 and provides a gallery of images and animations to send to the device.
 
 ## Hardware
 
@@ -98,11 +96,42 @@ I wanted some feedback to know what the feedback was doing, so added some LED st
 
 ## Desktop Application
 
-### Binary Images
+![App](assets/images/oled-controller/app.png)
+
+Simple choose the correct serial port, browse the gallery of 128x64 images, and send to the device.
+
+![App](assets/images/oled-controller/oled-face.png)
 
 ### Dithering
 
+For images that aren't plain black and white, it's possible to convert to grayscale and use a middle-level threshold to determine if a pixel should be displayed as a black pixel or a white pixel. This doesn't look great for some images, so I added dithering for non-binary images.
+
+
+I used the [ordered dithering](https://en.wikipedia.org/wiki/Ordered_dithering) algorithm and a 4x4 Bayer matrix.
+
+```py
+def dither_pixel(pixel: int, x: int, y: int) -> int:
+    # 4x4 Bayer matrix (values scaled 0-15)
+    bayer4 = [
+        [0, 8, 2, 10],
+        [12, 4, 14, 6],
+        [3, 11, 1, 9],
+        [15, 7, 13, 5],
+    ]
+
+    # choose matrix cell
+    threshold_map_value = bayer4[y % 4][x % 4]
+
+    # scale Bayer value (0-15) to 0-255
+    bayer_threshold = (threshold_map_value + 0.5) * (255 / 16)
+
+    return 1 if pixel < bayer_threshold else 0
+```
+
+Dithering proves to be quite effective in creating the illusion of gray pixels:
+
+![App](assets/images/oled-controller/dithering.png)
+
 ### Animations
 
-## Future
-
+Animations are also possible by defining frames and intervals. The app sets up a timer and sends the frames.
