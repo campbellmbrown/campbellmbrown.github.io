@@ -100,12 +100,13 @@ I wanted some feedback to know what the feedback was doing, so added some LED st
 
 Simple choose the correct serial port, browse the gallery of 128x64 images, and send to the device.
 
-![App](assets/images/oled-controller/oled-face.png)
+![OLED Face](assets/images/oled-controller/oled-face.png)
 
 ### Dithering
 
 For images that aren't plain black and white, it's possible to convert to grayscale and use a middle-level threshold to determine if a pixel should be displayed as a black pixel or a white pixel. This doesn't look great for some images, so I added dithering for non-binary images.
 
+![Dithering](assets/images/oled-controller/dithering.png)
 
 I used the [ordered dithering](https://en.wikipedia.org/wiki/Ordered_dithering) algorithm and a 4x4 Bayer matrix.
 
@@ -130,7 +131,7 @@ def dither_pixel(pixel: int, x: int, y: int) -> int:
 
 Dithering proves to be quite effective in creating the illusion of gray pixels:
 
-![App](assets/images/oled-controller/dithering.png)
+![Spyro](assets/images/oled-controller/spyro.png)
 
 ### Animations
 
