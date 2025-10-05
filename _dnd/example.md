@@ -1,6 +1,5 @@
 ---
-layout: post
-title: The Goblin Market
-description: A mysterious traveling market one-shot.
+title: Example
+description: This is an example.
 ---
-This is some content.
+This is example content.
