@@ -1,5 +1,6 @@
 ---
-title: Example
-description: This is an example.
+layout: post
+title: The Goblin Market
+description: A mysterious traveling market one-shot.
 ---
-This is example content.
+This is some content.
