@@ -1,4 +1,5 @@
 ---
+layout: page
 title: Bound for the Maw
 description: Example description.
 ---
